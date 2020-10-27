@@ -281,9 +281,47 @@ async function removeEmployee() {
 
 }
 
+//what employee information would you like to update?
+function updateEmployee () {
 
-//update manager
+}
 
+//update employee manager
+async function updateEmpMan() {
+    let employee = await connection.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employee");
+    employee.push({ id: null, name: "Cancel" });
+
+    inquirer
+        .prompt([
+            {
+                name: "employName",
+                type: "list",
+                message: "Which employee would you like to update?",
+                choices: employee.map(obj => obj.name)
+            }
+        ]).then(answer => {
+            if (answer.employName === "Cancel") {
+                userChoice();
+                return;  
+            }
+            let manager = employee.filter(currentEmployee => currentEmployee.name != answer.employName);
+            inquirer
+            .prompt([
+                {
+                    name: "managerName",
+                    type: "list",
+                    message: "Who is the new manager?",
+                    choices: manager.map(obj => obj.name)
+                }
+            ]).then(managerInfo => {
+                let empID = employee.find(obj => obj.name === answer.employName).id
+                let mgID = manager.find(obj => obj.name === managerInfo.managerName).id
+                connection.query("UPDATE employee SET manager_id=? WHERE id=?", [mgID, empID]);
+                console.log("\x1b[32m", `${answer.employName} now reports to ${managerInfo.managerName}`);
+                userChoice();
+            })
+        });   
+}
 //update employee role
 
 //addRole
