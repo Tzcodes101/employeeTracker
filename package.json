@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/Tzcodes101/employeeTracker/issues"
   },
-  "homepage": "https://github.com/Tzcodes101/employeeTracker#readme"
+  "homepage": "https://github.com/Tzcodes101/employeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
 }
