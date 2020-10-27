@@ -47,13 +47,13 @@ function userChoice() {
                     departmentTable();
                     break;
                 case "Edit Employee Information":
-                    editEmployee();
+                    editEmployeeChoices();
                     break;
                 case "Edit Roles":
-                    editRoles();
+                    editRoleChoices();
                     break;
                 case "Edit departments":
-                    editDepartments();
+                    editDepartmentChoices();
                     break;
                 case "None of the above":
                     connection.end;
@@ -91,9 +91,94 @@ function departmentTable() {
     })
 };
 
+//asks how a user would like to edit employee info
+function editEmployeeChoices() {
+    inquirer
+        .prompt({
+            name: "employeeChoice",
+            type: "list",
+            message: "What would you like to edit?",
+            choices: [
+                "Add a New Employee",
+                "Update a Current Employee's Info",
+                "Remove an Employee",
+                "Return to main menu"
+            ]
+        }).then(answers => {
+            switch (answers.employeeChoice) {
+                case "Add a New Employee" :
+                    addEmployee();
+                    break;
+                case "Update a Current Employee's Info":
+                    updateEmployee();
+                    break;
+                case "Remove an Employee":
+                    removeEmployee();
+                    break;
+                case "Return to main menu":
+                    userChoice();
+                    break;
+            }
+        })
+} 
 
+//asks how a user would like to edit role info
+function editRoleChoices() {
+    inquirer
+        .prompt({
+            name: "roleChoice",
+            type: "list",
+            message: "What would you like to edit?",
+            choices: [
+                "Add a New Role",
+                "Update a Current Role's Info",
+                "Remove a Role",
+                "Return to main menu"
+            ]
+        }).then(answers => {
+            switch (answers.roleChoice) {
+                case "Add a New Role" :
+                    addRole();
+                    break;
+                case "Update a Current Role's Info":
+                    updateRole();
+                    break;
+                case "Remove a Role":
+                    removeRole();
+                    break;
+                case "Return to main menu":
+                    userChoice();
+                    break;
+            }
+        })
+} 
 
-//adds new employees after asking for proper info
+//asks how a user would like to edit department info
+function editDepartmentChoices() {
+    inquirer
+        .prompt({
+            name: "departmentChoice",
+            type: "list",
+            message: "What would you like to edit?",
+            choices: [
+                "Add a New Department",
+                "Remove a Department",
+                "Return to main menu"
+            ]
+        }).then(answers => {
+            switch (answers.departmentChoice) {
+                case "Add a New Department" :
+                    addDepartment();
+                    break;
+                case "Remove a Department":
+                    removeDepartment();
+                    break;
+                case "Return to main menu":
+                    userChoice();
+                    break;
+            }
+        })
+} 
 
 //remove employee after asking for proper info
 
