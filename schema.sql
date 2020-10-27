@@ -3,13 +3,10 @@ CREATE database employees_db;
 
 USE employees_db;
 
-CREATE TABLE employee (
-  id INT NOT NULL AUTO_INCREMENT,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30) NOT NULL,
-  role_id INT(20) NOT NULL,
-  manager_id INT(20) NULL,
-  PRIMARY KEY (id)
+CREATE TABLE department (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE role (
@@ -19,12 +16,12 @@ CREATE TABLE role (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE department (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    PRIMARY KEY (id)
-);
 
-INSERT INTO department;
-INSERT INTO role;
-INSERT INTO employees;
+CREATE TABLE employee (
+  id INT NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  role_id INT(20) NOT NULL,
+  manager_id INT(20) NULL,
+  PRIMARY KEY (id)
+);
