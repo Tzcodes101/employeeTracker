@@ -16,7 +16,7 @@ connection.connect(function(err) {
     if(err) throw err;
     console.log("connected as id " + connection.threadId);
     userChoice();
-}) 
+})
 
 
 //prompt for if user would like to add departments, roles, or employees, view departments roles, or employees, or update to departments, roles, or employees and call appropriate function
@@ -71,19 +71,33 @@ function employeeTable() {
     });
 };
 
-
-
 //build row and department table
+function roleTable() {
+    console.log('roleTable');
+    connection.query('SELECT r.id, title, salary, name AS department FROM role r LEFT JOIN department d ON department_id = d.id', (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        userChoice();
+    })
+};
 
 //build department table
+function departmentTable() {
+    console.log('department table');
+    connection.query('SELECT id, name AS department FROM department', (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        userChoice();
+    })
+};
 
-//prevent empty strings
+
 
 //adds new employees after asking for proper info
 
 //remove employee after asking for proper info
 
-//update manader
+//update manager
 
 //update employee role
 
