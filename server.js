@@ -3,8 +3,34 @@ const mysql = require("mysql");
 const consoleTable = require("console.table");
 const inquirer = require("inquirer");
 
+class Connection {
+    constructor(config) {
+        this.connection = mysql.createConnection(config);
+    }
+
+    query(sql, args) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql, args, (err, rows) => {
+                if (err)
+                    return reject(err);
+                resolve(rows);
+            });
+        });
+    }
+
+    close() {
+        return new Promise((resolve, reject) => {
+            this.connection.end(err => {
+                if (err)
+                    return reject(err);
+                resolve();
+            });
+        });
+    }
+}
+
 //create sever
-const connection = mysql.createConnection({
+const connection = new Connection ({
     host: "localhost",
     port: 3306,
     user: "root",
@@ -12,12 +38,12 @@ const connection = mysql.createConnection({
     database: "employees_db"
 })
 
-connection.connect(function(err) {
-    if(err) throw err;
-    console.log("connected as id " + connection.threadId);
-    userChoice();
-})
-
+// connection.connect(function(err) {
+//     if(err) throw err;
+//     console.log("connected as id " + connection.threadId);
+//     userChoice();
+// })
+userChoice();
 
 //prompt for if user would like to add departments, roles, or employees, view departments roles, or employees, or update to departments, roles, or employees and call appropriate function
 function userChoice() {
@@ -62,9 +88,9 @@ function userChoice() {
 }
 
 //build employee table
-function employeeTable() {
+async function employeeTable() {
     console.log('employee table');
-    connection.query('SELECT e.id, e.first_name AS First_Name, e.last_name AS Last_Name, title AS Title, salary AS Salary, name AS Department, CONCAT(m.first_name, " ", m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id', (err, res) => {
+    await connection.query('SELECT e.id, e.first_name AS First_Name, e.last_name AS Last_Name, title AS Title, salary AS Salary, name AS Department, CONCAT(m.first_name, " ", m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id', (err, res) => {
         if (err) throw err;
         console.table(res);
         userChoice();
@@ -72,9 +98,9 @@ function employeeTable() {
 };
 
 //build row and department table
-function roleTable() {
+async function roleTable() {
     console.log('roleTable');
-    connection.query('SELECT r.id, title, salary, name AS department FROM role r LEFT JOIN department d ON department_id = d.id', (err, res) => {
+    await connection.query('SELECT r.id, title, salary, name AS department FROM role r LEFT JOIN department d ON department_id = d.id', (err, res) => {
         if (err) throw err;
         console.table(res);
         userChoice();
@@ -82,9 +108,9 @@ function roleTable() {
 };
 
 //build department table
-function departmentTable() {
+async function departmentTable() {
     console.log('department table');
-    connection.query('SELECT id, name AS department FROM department', (err, res) => {
+    await connection.query('SELECT id, name AS department FROM department', (err, res) => {
         if (err) throw err;
         console.table(res);
         userChoice();
@@ -179,6 +205,57 @@ function editDepartmentChoices() {
             }
         })
 } 
+
+//add employee
+async function addEmployee() {
+    let jobs = await connection.query("SELECT id, title FROM role");
+    let managers = await connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS Manager FROM employee');
+    managers.unshift({ id: null, Manager: "None" });
+
+    inquirer
+        .prompt([
+            {
+                name: "firstName",
+                type: "input",
+                message: "What is employee's first name?",
+                validate: function(input) {
+                    if (input != "" && input.length <= 30) {
+                        return true;
+                    }
+                    return "Value cannot be empty and must be less than 30 characters. "
+                }
+            },
+            {
+                name: "lastName",
+                type: "input",
+                message: "What is employee's last name?",
+                validate: function(input) {
+                    if (input != "" && input.length <= 30) {
+                        return true;
+                    }
+                    return "Value cannot be empty and must be less than 30 characters. "
+                }
+            },
+            {
+                name: "role",
+                type: "list",
+                message: "What is the employee's role?",
+                choices: jobs.map(obj => obj.title)
+            },
+            {
+                name: "manager",
+                type: "list",
+                message: "Who is the employee's manager?",
+                choices: managers.map(obj => obj.Manager)
+            },
+        ]).then(answers => {
+            let jobDetails = jobs.find(obj => obj.title === answers.role);
+            let manager = managers.find(obj => obj.Manager === answers.manager);
+            connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?)", [[answers.firstName.trim(), answers.lastName.trim(), jobDetails.id, manager.id]]);
+            console.log("\x1b[32m", `${answers.firstName} was successfuly added!`);
+            userChoice();
+    });
+};
 
 //remove employee after asking for proper info
 
