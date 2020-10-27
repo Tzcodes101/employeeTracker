@@ -258,6 +258,29 @@ async function addEmployee() {
 };
 
 //remove employee after asking for proper info
+async function removeEmployee() {
+    let employee = await connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');
+    employee.push({ id: null, name: "Cancel" });
+
+    inquirer
+        .prompt([
+            {
+                name: "employeeName",
+                type: "list",
+                message: "Which employee would you like to remove?",
+                choices: employee.map(obj => obj.name)
+            }
+        ]).then(answer => {
+            if(answer.employeeName != "Cancel") {
+                let removedEmployee = employee.find(obj => obj.name === answer.employeeName);
+                connection.query("DELETE FROM employee WHERE id=?", removedEmployee.id);
+                console.log("\x1b[32m", `${answer.employeeName} was removed`);
+            }
+            userChoice();
+        });
+
+}
+
 
 //update manager
 
