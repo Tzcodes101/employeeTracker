@@ -1,0 +1,20 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "Manage your employees",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tzcodes101/employeeTracker.git"
+  },
+  "author": "Talia Zisman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tzcodes101/employeeTracker/issues"
+  },
+  "homepage": "https://github.com/Tzcodes101/employeeTracker#readme"
+}
