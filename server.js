@@ -38,11 +38,7 @@ const connection = new Connection ({
     database: "employees_db"
 })
 
-// connection.connect(function(err) {
-//     if(err) throw err;
-//     console.log("connected as id " + connection.threadId);
-//     userChoice();
-// })
+
 userChoice();
 
 //prompt for if user would like to add departments, roles, or employees, view departments roles, or employees, or update to departments, roles, or employees and call appropriate function
@@ -322,8 +318,8 @@ async function updateEmpMan() {
             })
         });   
 }
-//update employee role
 
+//update employee role
 async function updateEmpRole() {
     let employee = await connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');
     employee.push({ id: null, name: "Cancel" });
@@ -356,8 +352,55 @@ async function updateEmpRole() {
 };
 
 //addRole
+async function addRole() {
+   let department = await connection.query("SELECT id, name FROM department");
 
-//updateRole
+   inquirer 
+    .prompt([
+        {
+            name: "roleName",
+            type: "input",
+            message: "What is the new role title?",
+            validate: function(input) {
+                if (input != "" && input.length <= 30) {
+                    return true;
+                }
+                return "Value cannot be empty and must be less than 30 characters. "
+            }
+        },
+        {
+            name: "roleSalary",
+            type: "input",
+            message: "What is the new role's corresponding salary?",
+            validate: input => {
+                if (!isNaN(input)) {
+                    return true;
+                }
+                return "Value must be a number";
+            }   
+        },
+        {
+            name: "roleDepartment",
+            type: "list",
+            message: "Choose the role's department:",
+            choices: department.map(obj => obj.name)
+        }
+
+    ]).then(answers => {
+            let depID = department.find(obj => obj.name === answers.roleDepartment).id
+            connection.query("INSERT INTO role (title, salary, department_id) VALUES (?)", [[answers.roleName, answers.roleSalary, depID]]);
+            console.log("\x1b[32m", `${answers.roleName} was added to the ${answers.roleDepartment} Department`);
+            userChoice();
+    });
+};
+
+//update role
+async function updateRole() {
+    let roles = connection.query("SELECT id, title FROM role");
+    roles.push ({ id: null, title: "Cancel" });
+}
+
+
 
 //removeRole
 
