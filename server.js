@@ -82,7 +82,8 @@ function userChoice() {
                     editDepartmentChoices();
                     break;
                 case "None of the above":
-                    connection.end;
+                    console.log("You have chosen to end the application");
+                    connection.end();
             }
         })
 }
@@ -126,8 +127,9 @@ function editEmployeeChoices() {
             message: "What would you like to edit?",
             choices: [
                 "Add a New Employee",
-                "Update a Current Employee's Info",
                 "Remove an Employee",
+                "Update a Current Employee's Manager",
+                "Update a Current Employee's Role",
                 "Return to main menu"
             ]
         }).then(answers => {
@@ -135,11 +137,14 @@ function editEmployeeChoices() {
                 case "Add a New Employee" :
                     addEmployee();
                     break;
-                case "Update a Current Employee's Info":
-                    updateEmployee();
-                    break;
                 case "Remove an Employee":
                     removeEmployee();
+                    break;
+                case "Update a Current Employee's Manager":
+                    updateEmpMan();
+                    break;
+                case "Update a Current Employee's Role":
+                    updateEmpRole();
                     break;
                 case "Return to main menu":
                     userChoice();
@@ -281,11 +286,6 @@ async function removeEmployee() {
 
 }
 
-//what employee information would you like to update?
-function updateEmployee () {
-
-}
-
 //update employee manager
 async function updateEmpMan() {
     let employee = await connection.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employee");
@@ -323,6 +323,37 @@ async function updateEmpMan() {
         });   
 }
 //update employee role
+
+async function updateEmpRole() {
+    let employee = await connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee');
+    employee.push({ id: null, name: "Cancel" });
+    console.log(employee);
+    let roles = await connection.query('SELECT id, title FROM role');
+
+    inquirer
+        .prompt([
+            {
+                name: "nameEmp",
+                type: "list",
+                message: "Which employee would you like to change the role for?",
+                choices: employee.map(obj => obj.name)
+            },
+            {
+                name: "newRole",
+                type: "list",
+                message: "What is the new role?",
+                choices: roles.map(obj => obj.title)
+            }
+        ]).then(answers => {
+            if (answers.empName != "Cancel") {
+            let employeeID = employee.find(obj => obj.name === answers.nameEmp).id
+            let roleID = roles.find(obj => obj.title === answers.newRole).id
+            connection.query("UPDATE employee SET role_id=? WHERE id=?", [roleID, employeeID]);
+            console.log("\x1b[32m", `${answers.nameEmp}'s new role is ${answers.newRole}`);
+        }
+        userChoice();
+    })
+};
 
 //addRole
 
