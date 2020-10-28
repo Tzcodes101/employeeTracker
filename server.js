@@ -30,7 +30,7 @@ class Connection {
 }
 
 //create sever
-const connection = new Connection ({
+const connection = new Connection({
     host: "localhost",
     port: 3306,
     user: "root",
@@ -45,20 +45,20 @@ userChoice();
 function userChoice() {
     inquirer
         .prompt({
-                name: "menu",
-                type: "list",
-                message: "What would you like to do?",
-                choices: [
-                    "View All Employees",
-                    "View All Roles",
-                    "View All Departments",
-                    "Edit Employee Information",
-                    "Edit Roles",
-                    "Edit departments",
-                    "None of the above"
-                ]
+            name: "menu",
+            type: "list",
+            message: "What would you like to do?",
+            choices: [
+                "View All Employees",
+                "View All Roles",
+                "View All Departments",
+                "Edit Employee Information",
+                "Edit Roles",
+                "Edit departments",
+                "None of the above"
+            ]
         }).then(answer => {
-            switch(answer.menu) {
+            switch (answer.menu) {
                 case "View All Employees":
                     employeeTable();
                     break;
@@ -130,7 +130,7 @@ function editEmployeeChoices() {
             ]
         }).then(answers => {
             switch (answers.employeeChoice) {
-                case "Add a New Employee" :
+                case "Add a New Employee":
                     addEmployee();
                     break;
                 case "Remove an Employee":
@@ -147,7 +147,7 @@ function editEmployeeChoices() {
                     break;
             }
         })
-} 
+}
 
 //asks how a user would like to edit role info
 function editRoleChoices() {
@@ -164,7 +164,7 @@ function editRoleChoices() {
             ]
         }).then(answers => {
             switch (answers.roleChoice) {
-                case "Add a New Role" :
+                case "Add a New Role":
                     addRole();
                     break;
                 case "Update a Current Role's Info":
@@ -178,7 +178,7 @@ function editRoleChoices() {
                     break;
             }
         })
-} 
+}
 
 //asks how a user would like to edit department info
 function editDepartmentChoices() {
@@ -194,7 +194,7 @@ function editDepartmentChoices() {
             ]
         }).then(answers => {
             switch (answers.departmentChoice) {
-                case "Add a New Department" :
+                case "Add a New Department":
                     addDepartment();
                     break;
                 case "Remove a Department":
@@ -205,7 +205,7 @@ function editDepartmentChoices() {
                     break;
             }
         })
-} 
+}
 
 //add employee
 async function addEmployee() {
@@ -219,7 +219,7 @@ async function addEmployee() {
                 name: "firstName",
                 type: "input",
                 message: "What is employee's first name?",
-                validate: function(input) {
+                validate: function (input) {
                     if (input != "" && input.length <= 30) {
                         return true;
                     }
@@ -230,7 +230,7 @@ async function addEmployee() {
                 name: "lastName",
                 type: "input",
                 message: "What is employee's last name?",
-                validate: function(input) {
+                validate: function (input) {
                     if (input != "" && input.length <= 30) {
                         return true;
                     }
@@ -255,7 +255,7 @@ async function addEmployee() {
             connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?)", [[answers.firstName.trim(), answers.lastName.trim(), jobDetails.id, manager.id]]);
             console.log("\x1b[32m", `${answers.firstName} was successfuly added!`);
             userChoice();
-    });
+        });
 };
 
 //remove employee after asking for proper info
@@ -272,7 +272,7 @@ async function removeEmployee() {
                 choices: employee.map(obj => obj.name)
             }
         ]).then(answer => {
-            if(answer.employeeName != "Cancel") {
+            if (answer.employeeName != "Cancel") {
                 let removedEmployee = employee.find(obj => obj.name === answer.employeeName);
                 connection.query("DELETE FROM employee WHERE id=?", removedEmployee.id);
                 console.log("\x1b[32m", `${answer.employeeName} was removed`);
@@ -298,25 +298,25 @@ async function updateEmpMan() {
         ]).then(answer => {
             if (answer.employName === "Cancel") {
                 userChoice();
-                return;  
+                return;
             }
             let manager = employee.filter(currentEmployee => currentEmployee.name != answer.employName);
             inquirer
-            .prompt([
-                {
-                    name: "managerName",
-                    type: "list",
-                    message: "Who is the new manager?",
-                    choices: manager.map(obj => obj.name)
-                }
-            ]).then(managerInfo => {
-                let empID = employee.find(obj => obj.name === answer.employName).id
-                let mgID = manager.find(obj => obj.name === managerInfo.managerName).id
-                connection.query("UPDATE employee SET manager_id=? WHERE id=?", [mgID, empID]);
-                console.log("\x1b[32m", `${answer.employName} now reports to ${managerInfo.managerName}`);
-                userChoice();
-            })
-        });   
+                .prompt([
+                    {
+                        name: "managerName",
+                        type: "list",
+                        message: "Who is the new manager?",
+                        choices: manager.map(obj => obj.name)
+                    }
+                ]).then(managerInfo => {
+                    let empID = employee.find(obj => obj.name === answer.employName).id
+                    let mgID = manager.find(obj => obj.name === managerInfo.managerName).id
+                    connection.query("UPDATE employee SET manager_id=? WHERE id=?", [mgID, empID]);
+                    console.log("\x1b[32m", `${answer.employName} now reports to ${managerInfo.managerName}`);
+                    userChoice();
+                })
+        });
 }
 
 //update employee role
@@ -342,63 +342,103 @@ async function updateEmpRole() {
             }
         ]).then(answers => {
             if (answers.empName != "Cancel") {
-            let employeeID = employee.find(obj => obj.name === answers.nameEmp).id
-            let roleID = roles.find(obj => obj.title === answers.newRole).id
-            connection.query("UPDATE employee SET role_id=? WHERE id=?", [roleID, employeeID]);
-            console.log("\x1b[32m", `${answers.nameEmp}'s new role is ${answers.newRole}`);
-        }
-        userChoice();
-    })
+                let employeeID = employee.find(obj => obj.name === answers.nameEmp).id
+                let roleID = roles.find(obj => obj.title === answers.newRole).id
+                connection.query("UPDATE employee SET role_id=? WHERE id=?", [roleID, employeeID]);
+                console.log("\x1b[32m", `${answers.nameEmp}'s new role is ${answers.newRole}`);
+            }
+            userChoice();
+        })
 };
 
 //addRole
 async function addRole() {
-   let department = await connection.query("SELECT id, name FROM department");
+    let department = await connection.query("SELECT id, name FROM department");
 
-   inquirer 
-    .prompt([
-        {
-            name: "roleName",
-            type: "input",
-            message: "What is the new role title?",
-            validate: function(input) {
-                if (input != "" && input.length <= 30) {
-                    return true;
+    inquirer
+        .prompt([
+            {
+                name: "roleName",
+                type: "input",
+                message: "What is the new role title?",
+                validate: function (input) {
+                    if (input != "" && input.length <= 30) {
+                        return true;
+                    }
+                    return "Value cannot be empty and must be less than 30 characters. "
                 }
-                return "Value cannot be empty and must be less than 30 characters. "
+            },
+            {
+                name: "roleSalary",
+                type: "input",
+                message: "What is the new role's corresponding salary?",
+                validate: input => {
+                    if (!isNaN(input)) {
+                        return true;
+                    }
+                    return "Value must be a number";
+                }
+            },
+            {
+                name: "roleDepartment",
+                type: "list",
+                message: "Choose the role's department:",
+                choices: department.map(obj => obj.name)
             }
-        },
-        {
-            name: "roleSalary",
-            type: "input",
-            message: "What is the new role's corresponding salary?",
-            validate: input => {
-                if (!isNaN(input)) {
-                    return true;
-                }
-                return "Value must be a number";
-            }   
-        },
-        {
-            name: "roleDepartment",
-            type: "list",
-            message: "Choose the role's department:",
-            choices: department.map(obj => obj.name)
-        }
 
-    ]).then(answers => {
+        ]).then(answers => {
             let depID = department.find(obj => obj.name === answers.roleDepartment).id
             connection.query("INSERT INTO role (title, salary, department_id) VALUES (?)", [[answers.roleName, answers.roleSalary, depID]]);
             console.log("\x1b[32m", `${answers.roleName} was added to the ${answers.roleDepartment} Department`);
             userChoice();
-    });
+        });
 };
 
 //update role
 async function updateRole() {
-    let roles = connection.query("SELECT id, title FROM role");
-    roles.push ({ id: null, title: "Cancel" });
-}
+    let roles = await connection.query('SELECT id, title FROM role');
+    roles.push({ id: null, title: "Cancel" });
+    let departments = await connection.query('SELECT id, name FROM department');
+
+    inquirer.prompt([
+        {
+            name: "roleName",
+            type: "list",
+            message: "Update which role?",
+            choices: roles.map(obj => obj.title)
+        }
+    ]).then(response => {
+        if (response.roleName == "Cancel") {
+            userChoice();
+            return;
+        }
+        inquirer.prompt([
+            {
+                name: "newSalary",
+                type: "input",
+                message: "What is the new salary for this role?",
+                validate: input => {
+                    if (!isNaN(input)) {
+                        return true;
+                    }
+                    return "Salary must be a number."
+                }
+            },
+            {
+                name: "roleDepartment",
+                type: "list",
+                message: "Choose the role's department:",
+                choices: departments.map(obj => obj.name)
+            }
+        ]).then(answers => {
+            let depID = departments.find(obj => obj.name === answers.roleDepartment).id
+            let roleID = roles.find(obj => obj.title === response.roleName).id
+            connection.query("UPDATE role SET title=?, salary=?, department_id=? WHERE id=?", [response.roleName, answers.newSalary, depID, roleID]);
+            console.log("\x1b[32m", `Role ${response.roleName} was successfully updated.`);
+            userChoice();
+        })
+    })
+};
 
 
 
