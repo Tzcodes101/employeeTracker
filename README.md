@@ -1,6 +1,6 @@
 <h1 align=center>Employee Tracker</h1>
 
-- Link to GitHub repository: https://github.com/Tzcodes101/employeeTracker2
+- Link to GitHub repository: https://github.com/Tzcodes101/employeeTracker
 - Link to animation of use: https://drive.google.com/file/d/1Vy--kRTFCeRb2ODrGDQcH5TCDpO4ByTc/view
 
 ## Description
@@ -16,7 +16,7 @@ This project provides a command line interface (CLI) for a business to manage a 
 - [Questions](#Questions)
 
 ## Installation
-To install, a user must clone the code for the project from it's GitHub repository (https://github.com/Tzcodes101/employeeTracker2) to their local workspace. The user must then run npm install inquirer, mysql, and console.table. A user must also have node.js and a MySQL work station (such as MySQL WorkBench) installed and working on their computer. 
+To install, a user must clone the code for the project from it's GitHub repository (https://github.com/Tzcodes101/employeeTracker) to their local workspace. The user must then run npm install inquirer, mysql, and console.table. A user must also have node.js and a MySQL work station (such as MySQL WorkBench) installed and working on their computer. 
 
 ## Usage
 The user must query the employee_db code (from schema.sql) in workbench, using the seed.sql file as a starting point. The user then runs node server.js and follows the prompts in the command line.
