@@ -420,6 +420,26 @@ async function removeRole() {
 }
 
 //addDeparment
+async function addDepartment() {
+    inquirer
+        .prompt([
+            {
+                name: "newDepName",
+                type: "input",
+                message: "What is the name of the new role department?",
+                validate: function (input) {
+                    if (input != "" && input.length <= 30) {
+                        return true;
+                    }
+                    return "Value cannot be empty and must be less than 30 characters. "
+                }
+            }
+        ]).then(answer => {
+            connection.query("INSERT INTO department (name) VALUES (?)", [answer.newDepName]);
+            console.log("\x1b[32m", `${answer.newDepName} was successfully added to departments.`);
+            userChoice();
+        });
+};
 
 //removeDepartment
 async function removeDepartment() {
