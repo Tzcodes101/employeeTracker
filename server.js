@@ -440,9 +440,29 @@ async function updateRole() {
     })
 };
 
-
-
 //removeRole
+async function removeRole() {
+    let roles = await connection.query('SELECT id, title FROM role');
+    roles.push({ id: null, title: "Cancel" });
+
+    inquirer
+        .prompt([
+            {
+                name: "removedRole",
+                type: "list",
+                message: "Which role would you like to remove?",
+                choices: roles.map(obj => obj.title)
+            }
+        ]).then(answer => {
+            if (answer.removedRole != "Cancel") {
+                let removedRole = roles.find(obj => obj.title === answer.removedRole);
+                connection.query("DELETE FROM role WHERE id=?", removedRole.id);
+                console.log("\x1b[32m", `${answer.removedRole} was removed as a role`);
+            }
+            userChoice();
+        });
+
+}
 
 //addDeparment
 
