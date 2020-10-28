@@ -1,7 +1,7 @@
 //dependencies, mysql, express, inquirer, app
 const mysql = require("mysql");
-const consoleTable = require("console.table");
 const inquirer = require("inquirer");
+const consoleTable = require("console.table");
 
 class Connection {
     constructor(config) {
