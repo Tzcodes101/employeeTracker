@@ -39,51 +39,6 @@ const connection = new Connection({
 })
 
 
-userChoice();
-
-//prompt for if user would like to add departments, roles, or employees, view departments roles, or employees, or update to departments, roles, or employees and call appropriate function
-function userChoice() {
-    inquirer
-        .prompt({
-            name: "menu",
-            type: "list",
-            message: "What would you like to do?",
-            choices: [
-                "View All Employees",
-                "View All Roles",
-                "View All Departments",
-                "Edit Employee Information",
-                "Edit Roles",
-                "Edit departments",
-                "None of the above"
-            ]
-        }).then(answer => {
-            switch (answer.menu) {
-                case "View All Employees":
-                    employeeTable();
-                    break;
-                case "View All Roles":
-                    roleTable();
-                    break;
-                case "View All Departments":
-                    departmentTable();
-                    break;
-                case "Edit Employee Information":
-                    editEmployeeChoices();
-                    break;
-                case "Edit Roles":
-                    editRoleChoices();
-                    break;
-                case "Edit departments":
-                    editDepartmentChoices();
-                    break;
-                case "None of the above":
-                    console.log("You have chosen to end the application");
-                    connection.end();
-            }
-        })
-}
-
 //build employee table
 async function employeeTable() {
     console.log('employee table');
@@ -467,15 +422,71 @@ async function removeRole() {
 //addDeparment
 
 //removeDepartment
+async function removeDepartment() {
+    let department = await connection.query('SELECT id, name FROM department');
+    department.push({ id: null, name: "Cancel" });
 
-//make changes to specific emplpyees
+    inquirer
+        .prompt([
+            {
+                name: "depName",
+                type: "list",
+                message: "Which department would you like to remove?",
+                choices: department.map(obj => obj.name)
+            }
+        ]).then(answer => {
+            if (answer.depName != "Cancel") {
+                let depName = department.find(obj => obj.name === answer.depName);
+                connection.query("DELETE FROM department WHERE id=?", depName.id);
+                console.log("\x1b[32m", `${answer.depName} was removed`);
+            }
+            userChoice();
+        });
 
-//same for roles
+}
 
-//same for departments
+//prompt for if user would like to add departments, roles, or employees, view departments roles, or employees, or update to departments, roles, or employees and call appropriate function
+function userChoice() {
+    inquirer
+        .prompt({
+            name: "menu",
+            type: "list",
+            message: "What would you like to do?",
+            choices: [
+                "View All Employees",
+                "View All Roles",
+                "View All Departments",
+                "Edit Employee Information",
+                "Edit Roles",
+                "Edit departments",
+                "None of the above"
+            ]
+        }).then(answer => {
+            switch (answer.menu) {
+                case "View All Employees":
+                    employeeTable();
+                    break;
+                case "View All Roles":
+                    roleTable();
+                    break;
+                case "View All Departments":
+                    departmentTable();
+                    break;
+                case "Edit Employee Information":
+                    editEmployeeChoices();
+                    break;
+                case "Edit Roles":
+                    editRoleChoices();
+                    break;
+                case "Edit departments":
+                    editDepartmentChoices();
+                    break;
+                case "None of the above":
+                    console.log("You have chosen to exit the application.");
+                    connection.end();
+            }
+        })
+}
 
-
-
-//function viewSearch
-//prompt for what want to search for (department, employee, or role)
-//with
+//call function to begin using application
+userChoice();
