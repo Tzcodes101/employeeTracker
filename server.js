@@ -1,7 +1,6 @@
 //dependencies, mysql, express, inquirer, app
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
 
 class Connection {
     constructor(config) {
@@ -503,7 +502,7 @@ function userChoice() {
                     break;
                 case "None of the above":
                     console.log("You have chosen to exit the application.");
-                    connection.end();
+                    break;
             }
         })
 }
