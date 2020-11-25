@@ -26,7 +26,7 @@ The user must query the employee_db code (from schema.sql) in workbench, using t
 
 ## Languages
 The languages and frameworks to create this project include:
-- Inquierer
+- Inquirer
 - Node.js
 - MySql
 - Javascript
