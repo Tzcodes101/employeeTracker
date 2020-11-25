@@ -12,7 +12,7 @@ This project provides a command line interface (CLI) for a business to manage a 
 - [Description](#Description)
 - [Installation](#Installation)
 - [Usage](#Usage)
-- Languages(#Languages)
+- [Languages](#Languages)
 - [License](#License)
 - [Contributors](#Contributors)
 - [Testing](#Testing)
