@@ -1,5 +1,7 @@
 <h1 align=center>Employee Tracker</h1>
 
+![badge](https://img.shields.io/badge/license-ISC-brightgreen)
+
 - Link to GitHub repository: https://github.com/Tzcodes101/employeeTracker
 - Link to animation of use: https://drive.google.com/file/d/1Vy--kRTFCeRb2ODrGDQcH5TCDpO4ByTc/view
 
@@ -10,6 +12,7 @@ This project provides a command line interface (CLI) for a business to manage a 
 - [Description](#Description)
 - [Installation](#Installation)
 - [Usage](#Usage)
+- Languages(#Languages)
 - [License](#License)
 - [Contributors](#Contributors)
 - [Testing](#Testing)
@@ -21,8 +24,17 @@ To install, a user must clone the code for the project from it's GitHub reposito
 ## Usage
 The user must query the employee_db code (from schema.sql) in workbench, using the seed.sql file as a starting point. The user then runs node server.js and follows the prompts in the command line.
 
+## Languages
+The languages and frameworks to create this project include:
+- Inquierer
+- Node.js
+- MySql
+- Javascript
+
 ## License
-This project is not covered by any license.
+![badge](https://img.shields.io/badge/license-ISC-brightgreen)
+
+This project is covered by the ISC license.
 
 ## Contributors
 - Talia Zisman
